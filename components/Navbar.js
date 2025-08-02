@@ -64,7 +64,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top Navbar */}
-      <nav className="bg-[#024357] text-white px-4 py-3 relative shadow-md z-50">
+      <nav className="bg-[#024357] text-white px-4 py-1 relative shadow-md z-50">
         <div className="flex justify-between items-center md:hidden">
           <span className="font-bold text-xl">MENU</span>
           <button onClick={toggleMobileMenu}>
@@ -74,10 +74,26 @@ export default function Navbar() {
 
         <ul className={`${mobileMenuOpen ? 'flex' : 'hidden'} flex-col md:flex md:flex-row md:justify-center gap-3 mt-3 md:mt-0`}>
           {visibleMenus.map((item, index) => (
-            <li key={index} className="relative group">
+            <li
+              key={index}
+              className="relative group"
+              onMouseEnter={() => {
+                if (!mobileMenuOpen) setOpenDropdown(index);
+              }}
+              onMouseLeave={() => {
+                if (!mobileMenuOpen) setOpenDropdown(null);
+              }}
+            >
               {item.submenus ? (
                 <>
-                  <div className="flex items-center cursor-pointer hover:underline" onClick={() => setOpenDropdown(index)}>
+                  <div
+                    className="flex items-center cursor-pointer hover:underline px-2 py-1"
+                    onClick={() => {
+                      if (mobileMenuOpen) {
+                        setOpenDropdown(openDropdown === index ? null : index);
+                      }
+                    }}
+                  >
                     <span>{item.title}</span>
                     <ChevronDown className="ml-1 w-4 h-4" />
                   </div>
@@ -100,7 +116,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href={item.link}
-                  className="hover:underline block"
+                  className="hover:underline block px-2 py-1"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.title}
@@ -108,9 +124,10 @@ export default function Navbar() {
               )}
             </li>
           ))}
+
           {hiddenMenus.length > 0 && (
             <li>
-              <button onClick={() => setShowAllMenus(true)} className="flex items-center gap-1 hover:underline">
+              <button onClick={() => setShowAllMenus(true)} className="flex items-center gap-1 hover:underline px-2 py-1">
                 <LayoutGrid size={18} />
                 <span>All Menus</span>
               </button>
@@ -119,11 +136,19 @@ export default function Navbar() {
         </ul>
       </nav>
 
+      {/* Dark Shadow */}
+      {showAllMenus && (
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black/60 z-40 transition-opacity"
+          onClick={() => setShowAllMenus(false)}
+        />
+      )}
+
       {/* Sidebar Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-80 bg-[#236f84] text-white z-50 p-6 overflow-y-auto 
+      <div className={`fixed top-0 right-0 h-full w-[500px] bg-[#236f84] text-white z-50 p-6 overflow-y-auto 
         transform transition-transform duration-500 ease-in-out 
         ${showAllMenus ? 'translate-x-0' : 'translate-x-full'} 
-        shadow-2xl backdrop-blur-lg rounded-l-lg animate-slide-in-right`}>
+        shadow-2xl rounded-l-xl animate-slide-in-right`}>
 
         <div className="flex justify-between items-center mb-4 animate-fade-in-down">
           <h2 className="text-xl font-bold">All Menus</h2>
